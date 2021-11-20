@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /*
  * Copyright (C) 2015 Aeranythe Echosong
@@ -35,13 +38,12 @@ public class World {
     private int height;
     private List<Thing> things;
     public static final int TILE_TYPES = 2;
-
     public World(Tile[][] tiles) {
         this.tiles = tiles;
         this.width = tiles.length;
         this.height = tiles[0].length;
         //this.things = new ArrayList<>();
-        this.things = Collections.synchronizedList(new ArrayList<>());
+        this.things = new CopyOnWriteArrayList();
 
         
     }
@@ -89,16 +91,19 @@ public class World {
 
         creature.setX(x);
         creature.setY(y);
-
         this.things.add(creature);
     }
-    public Thing thing(int x,int y){
+    public synchronized Thing thing(int x,int y){
+        
+        Thing result = null;
         for(Thing th:this.things){
             if (th.x() == x && th.y() == y) {
-                return th;
+                result = th;
+                break;
             }
         }
-        return null;
+        
+        return result;
     }
     public Creature creature(int x, int y) {
         Thing thing = thing(x, y);
@@ -118,7 +123,6 @@ public class World {
 
     public void update() {
         ArrayList<Thing> toUpdate = new ArrayList<>(this.things);
-
         for (Thing creature : toUpdate) {
             creature.update();
         }

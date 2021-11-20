@@ -24,6 +24,7 @@ import javax.swing.JFrame;
 
 import asciiPanel.AsciiFont;
 import asciiPanel.AsciiPanel;
+import screen.LoseScreen;
 import screen.Screen;
 import screen.StartScreen;
 /**
@@ -91,7 +92,6 @@ public class ApplicationMain extends JFrame implements KeyListener {
      */
     public void keyTyped(KeyEvent e) {
     }
-
     public static void main(String[] args) {
         ApplicationMain app = new ApplicationMain();
         app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

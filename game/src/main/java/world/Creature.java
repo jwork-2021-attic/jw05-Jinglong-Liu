@@ -66,4 +66,7 @@ public class Creature extends Thing{
         //this.visionRadius = visionRadius;
         super(world,glyph,color,maxHP,attack,defense,visionRadius);
     }
+    public void fire(Bullet bullet){
+        threadPool.execute(bullet);
+    }
 }

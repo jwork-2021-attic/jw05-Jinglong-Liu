@@ -1,6 +1,10 @@
 package world;
 import java.awt.Color;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 public class Thing {
+    public static ExecutorService threadPool = Executors.newCachedThreadPool();
     protected World world;
 
     private int x;
@@ -35,12 +39,14 @@ public class Thing {
         return this.color;
     }
 
-    private CreatureAI ai;
+    protected CreatureAI ai;
 
     public void setAI(CreatureAI ai) {
         this.ai = ai;
     }
-
+    public CreatureAI getAI() {
+        return ai;
+    }
     private int maxHP;
 
     public int maxHP() {
@@ -98,7 +104,17 @@ public class Thing {
        world.dig(wx, wy);
     }
 
-    public void moveBy(int mx, int my) {
+    public synchronized void moveBy(int mx, int my,boolean isAttack) {
+        Thing other = world.thing(x + mx, y + my);
+
+        if (other == null) {
+            ai.onEnter(x + mx, y + my, world.tile(x + mx, y + my));
+        } else if(isAttack){
+            attack(other);
+        }
+        //notifyAll();
+    }
+    public synchronized void moveBy(int mx, int my) {
         Thing other = world.thing(x + mx, y + my);
 
         if (other == null) {
@@ -108,7 +124,6 @@ public class Thing {
         }
         //notifyAll();
     }
-
     public void attack(Thing other) {
         int damage = Math.max(0, this.attackValue() - other.defenseValue());
         damage = (int) (Math.random() * damage) + 1;
@@ -166,6 +181,44 @@ public class Thing {
                 moveBy(0, 1);
                 break;
         }
+    }
+    public void stepAndAttack(boolean isAttack){
+        switch (direction){
+            case LEFT:
+                moveBy(-1, 0,isAttack);
+                break;
+            case RIGHT:
+                moveBy(1, 0,isAttack);
+                break;
+            case UP:
+                moveBy(0, -1,isAttack);
+                break;
+            case DOWN:
+                moveBy(0, 1,isAttack);
+                break;
+        }
+    }
+    public void randomTurn(){
+        Direction direct = this.direction;
+        while(direct == this.direction){
+            Random ran = new Random();
+            int num = ran.nextInt(4);
+            switch(num){
+                case 0:
+                    direct = Direction.LEFT;
+                    break;
+                case 1:
+                    direct = Direction.RIGHT;
+                    break;
+                case 2:
+                    direct = Direction.UP;
+                    break;
+                case 3:
+                    direct = Direction.DOWN;
+                    break;
+            }
+        }
+        turn(direct);
     }
     public void die(){
         this.modifyHP(-this.hp);

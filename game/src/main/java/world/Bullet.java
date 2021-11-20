@@ -39,7 +39,7 @@ public class Bullet extends world.Item implements Runnable{
                 step();
 
                 //System.out.println(order.x() + " " + order.y()+ " "+x() + " " + y());
-                TimeUnit.MILLISECONDS.sleep(500);
+                TimeUnit.MILLISECONDS.sleep(200);
             }
             catch(InterruptedException e){
                 e.printStackTrace();

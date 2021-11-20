@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Queue;
 
 import asciiPanel.AsciiPanel;
+import screen.PlayScreen;
+import screen.Screen;
 
 /**
  *
@@ -35,8 +37,8 @@ public class CreatureFactory {
         this.world = world;
     }
 
-    public Creature newPlayer(List<String> messages) {
-        Creature player = new Creature(this.world, (char)2, AsciiPanel.brightWhite, 100, 20, 5, 9);
+    public Creature newPlayer(List<String> messages){
+        Creature player = new Creature(this.world, (char)2, AsciiPanel.brightWhite, 1, 20, 5, 9);
         world.addAtEmptyLocation(player);
         new PlayerAI(player, messages);
         return player;
@@ -60,5 +62,12 @@ public class CreatureFactory {
 
     public Wall newWall(int x,int y){
         return new Wall(this.world,x,y);
+    }
+    public Enemy newEnemy(){
+        //Enemy(World world, char glyph, Color color, int maxHP, int attack, int defense)
+        Enemy enemy = new Enemy(world,(char)2,AsciiPanel.green,2,1,0,this);
+        world.addAtEmptyLocation(enemy);
+        new EnemyAI(enemy);
+        return enemy;
     }
 }

@@ -39,7 +39,7 @@ public class PlayScreen implements Screen {
     private List<String> messages;
     private List<String> oldMessages;
     private CreatureFactory factory;
-    private ExecutorService threadPool = Executors.newCachedThreadPool();
+    //private ExecutorService threadPool = Executors.newCachedThreadPool();
     public PlayScreen() {
         this.screenWidth = 80;
         this.screenHeight = 24;
@@ -49,13 +49,15 @@ public class PlayScreen implements Screen {
 
         factory = new CreatureFactory(this.world);
         createCreatures(factory);
+        Enemy.enemyNum = 3;
     }
 
     private void createCreatures(CreatureFactory creatureFactory) {
         this.player = creatureFactory.newPlayer(this.messages);
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < Enemy.enemyNum;i++) {
             creatureFactory.newFungus();
+            new Thread(creatureFactory.newEnemy()).start();
         }
     }
     
@@ -99,7 +101,10 @@ public class PlayScreen implements Screen {
             terminal.write(messages.get(i), 1, top + i + 1);
         }
         this.oldMessages.addAll(messages);
-        messages.clear();
+
+        while(messages.size() > 1){
+            messages.remove(0);
+        }
     }
 
     @Override
@@ -118,6 +123,12 @@ public class PlayScreen implements Screen {
 
     @Override
     public Screen respondToUserInput(KeyEvent key) {
+        if(player.hp() <= 0){
+            return new LoseScreen();
+        }
+        else if(Enemy.enemyNum == 0){
+            return new WinScreen();
+        }
         switch (key.getKeyCode()) {
             case KeyEvent.VK_LEFT:
                 player.turn(Direction.LEFT);
@@ -136,7 +147,7 @@ public class PlayScreen implements Screen {
                 player.moveBy(0, 1);
                 break;
             case KeyEvent.VK_J:
-                threadPool.execute(factory.newBullet(player));
+                player.fire(factory.newBullet(player));
                 break;
         }
         return this;
@@ -149,5 +160,4 @@ public class PlayScreen implements Screen {
     public int getScrollY() {
         return Math.max(0, Math.min(player.y() - screenHeight / 2, world.height() - screenHeight));
     }
-
 }
