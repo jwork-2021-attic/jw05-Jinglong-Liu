@@ -46,10 +46,10 @@ public class PlayScreen implements Screen {
         createWorld();
         this.messages = new ArrayList<String>();
         this.oldMessages = new ArrayList<String>();
-
+        Enemy.enemyNum = 2;
         factory = new CreatureFactory(this.world);
         createCreatures(factory);
-        Enemy.enemyNum = 3;
+        
     }
 
     private void createCreatures(CreatureFactory creatureFactory) {
@@ -132,19 +132,19 @@ public class PlayScreen implements Screen {
         switch (key.getKeyCode()) {
             case KeyEvent.VK_LEFT:
                 player.turn(Direction.LEFT);
-                player.moveBy(-1, 0);
+                player.moveBy(-1, 0,false);
                 break;
             case KeyEvent.VK_RIGHT:
                 player.turn(Direction.RIGHT);
-                player.moveBy(1, 0);
+                player.moveBy(1, 0,false);
                 break;
             case KeyEvent.VK_UP:
                 player.turn(Direction.UP);
-                player.moveBy(0, -1);
+                player.moveBy(0, -1,false);
                 break;
             case KeyEvent.VK_DOWN:
                 player.turn(Direction.DOWN);
-                player.moveBy(0, 1);
+                player.moveBy(0, 1,false);
                 break;
             case KeyEvent.VK_J:
                 player.fire(factory.newBullet(player));

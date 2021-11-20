@@ -28,4 +28,9 @@ public class Player extends Creature {
             ai.onNotify("输！");
         }
     }
+    @Override
+    public void step() {
+        // TODO Auto-generated method stub
+        super.stepAndAttack(false);
+    }
 }

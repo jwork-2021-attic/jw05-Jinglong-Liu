@@ -36,7 +36,7 @@ public class Enemy extends Creature implements Runnable{
         }
         else{
             this.stepAndAttack(false);
-            System.out.println(x() + " " +  y());
+            //System.out.println(x() + " " +  y());
         }
     }
     @Override
@@ -44,8 +44,9 @@ public class Enemy extends Creature implements Runnable{
         // TODO Auto-generated method stub
         super.modifyHP(amount);
         if(hp() <= 0){
-            enemyNum--;
-            if(enemyNum == 0){
+            Enemy.enemyNum--;
+            System.out.println(Enemy.enemyNum);
+            if(Enemy.enemyNum == 0){
                 notify("赢！");
             }           
         }
