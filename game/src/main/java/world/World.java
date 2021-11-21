@@ -57,6 +57,7 @@ public class World {
         things.clear();
         bullets.clear();
         nodifyMessage("lose...");
+        tiles[mx][my] = Tile.X;
     }
     public void acceptWin(){
         state = 1;

@@ -40,8 +40,8 @@ public enum Tile {
 
     CAMP((char)3,AsciiPanel.brightRed),
 
-    CITYWALL((char) 177, AsciiPanel.brown);
-
+    CITYWALL((char) 177, AsciiPanel.brown),
+    X('x',AsciiPanel.brightRed);
     private char glyph;
 
     public char glyph() {

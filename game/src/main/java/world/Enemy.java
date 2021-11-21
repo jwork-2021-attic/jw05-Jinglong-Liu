@@ -3,10 +3,12 @@ package world;
 import java.awt.Color;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Enemy extends Creature{
-    public static int enemyNum = 8;
+    public static AtomicInteger enemyNum;
     private CreatureFactory factory;
+    String lk = new String();
     public Enemy(World world, char glyph, Color color, int maxHP, int attack, int defense,CreatureFactory factory) {
         //super(world, glyph, color, maxHP, attack, defense, visionRadius);
         super(world, glyph, color, maxHP, attack, defense, 0);
@@ -19,7 +21,7 @@ public class Enemy extends Creature{
         while(hp() > 0 && world.isPlay()){
             try{
                 TimeUnit.MILLISECONDS.sleep(400);
-                randomStep();
+                step();
             }
             catch(InterruptedException e){
                 e.printStackTrace();
@@ -45,52 +47,67 @@ public class Enemy extends Creature{
     public void step(){
         Random rand = new Random();
         int r1 = rand.nextInt(100);
-        if(r1<=50){
-            factory.newBullet(this);
-        }else if(Math.abs(x() - world.getMx()) <= 1){
+        int r2 = rand.nextInt(100);
+        if(Math.abs(x() - world.getMx()) <= 1){
             turn(Direction.DOWN);
-            super.step();
         }
+        
         else if(y() == world.height() - 1){
             if(x() < world.getMx() - 1){
                 turn(Direction.RIGHT);
             }
-            else if(x() > world.getMy() + 1){
+            else if(x() > world.getMx() + 1){
                 turn(Direction.LEFT);
             }
         }
-        else if(r1 < 60){
-
-            if(x() < world.getMx() - 1){
-                turn(Direction.RIGHT);
-                super.step();
-            }
-            else if(x() > world.getMy() + 1){
-                turn(Direction.LEFT);
-                super.step();
-            }
-            else{
-                super.step();
+        else if(y() >= world.height() - 3){
+            if(getDirection() == Direction.DOWN){
+                if(r2 < 40){
+                    if(x() < world.getMx() - 1){
+                        turn(Direction.RIGHT);
+                    }
+                    else if(x() > world.getMx() + 1){
+                        turn(Direction.LEFT);
+                    }
+                }
             }
         }
-        else if(r1 < 80){
-            turn(Direction.DOWN);
-            super.step();
+        else if(getDirection() == Direction.DOWN){
+            if(r2 > 90 && y() > world.height()/3*2){
+                if(x() < world.getMx() - 1){
+                    turn(Direction.RIGHT);
+                }
+                else if(x() > world.getMx() + 1){
+                    turn(Direction.LEFT);
+                }
+            }
         }
         else{
-            super.step();
+            if(r2 < 20){
+                turn(Direction.DOWN);
+            }
         }
+        if(r1 < 28){
+            factory.newBullet(this);
+        }
+        else{
+            stepAndAttack(false);
+        } 
     }
     @Override
     public void modifyHP(int amount) {
         // TODO Auto-generated method stub
-        super.modifyHP(amount);
-        if(hp() <= 0){
-            Enemy.enemyNum--;
+        synchronized(lk){
+            if(hp() <= 0){
+                return;
+            }
+            super.modifyHP(amount);
+            if(hp() <= 0){
             //System.out.println(Enemy.enemyNum);
-            if(Enemy.enemyNum == 0){
-                world.acceptWin();
-            }           
+                if(enemyNum.decrementAndGet() == 0){
+                    world.acceptWin();
+                }           
+            }
         }
     }
     @Override

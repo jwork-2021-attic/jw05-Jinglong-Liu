@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package screen;
+
 import world.*;
 import asciiPanel.AsciiPanel;
 import java.awt.Color;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 /**
  *
  * @author Aeranythe Echosong
@@ -42,11 +44,11 @@ public class PlayScreen implements Screen {
     public PlayScreen() {
         this.screenWidth = 45;
         this.screenHeight = 45;
-        
+        Enemy.enemyNum = new AtomicInteger(8);
         this.messages = new CopyOnWriteArrayList<>();
         this.oldMessages = new ArrayList<String>();
         createWorld();
-        Enemy.enemyNum = 8;
+        
         factory = new CreatureFactory(this.world);
         createCreatures(factory);
         new Thread(new Runnable(){
@@ -70,7 +72,7 @@ public class PlayScreen implements Screen {
     private void createCreatures(CreatureFactory creatureFactory) {
         this.player = creatureFactory.newPlayer(this.messages);
 
-        for (int i = 0; i < Enemy.enemyNum;i++) {
+        for (int i = 0; i < Enemy.enemyNum.get();i++) {
             //creatureFactory.newFungus();
             new Thread(creatureFactory.newEnemy(this.messages)).start();
         }

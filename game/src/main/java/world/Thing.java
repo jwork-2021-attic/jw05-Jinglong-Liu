@@ -115,6 +115,9 @@ public class Thing {
         else if(this instanceof Player &&  other instanceof Bullet){
             other.attack(this);
         }
+        else if(this instanceof Enemy && other instanceof Bullet && ((Bullet)other).getOrder() instanceof Player){
+            other.attack(this);
+        }
         //notifyAll();
     }
     public synchronized void moveBy(int mx, int my) {
