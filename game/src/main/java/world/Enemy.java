@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class Enemy extends Creature implements Runnable{
+public class Enemy extends Creature{
     public static int enemyNum = 2;
     private CreatureFactory factory;
     public Enemy(World world, char glyph, Color color, int maxHP, int attack, int defense,CreatureFactory factory) {
@@ -32,7 +32,8 @@ public class Enemy extends Creature implements Runnable{
             randomTurn();
         }
         else if(turn <2){
-            fire(factory.newBullet(this));
+            //fire(factory.newBullet(this));
+            factory.newBullet(this);
         }
         else{
             this.stepAndAttack(false);
@@ -45,10 +46,26 @@ public class Enemy extends Creature implements Runnable{
         super.modifyHP(amount);
         if(hp() <= 0){
             Enemy.enemyNum--;
-            System.out.println(Enemy.enemyNum);
+            //System.out.println(Enemy.enemyNum);
             if(Enemy.enemyNum == 0){
                 notify("赢！");
+                world.acceptWin();
             }           
         }
+    }
+    @Override
+    public void addAtEmptyLocation(World world) {
+        // TODO Auto-generated method stub
+        int x;
+        int y;
+
+        do {
+            x = (int) (Math.random() * world.width());
+            y = (int) (Math.random() * world.height()/3);
+        } while (!tile(x, y).isGround() || world.creature(x, y) != null);
+
+        setX(x);
+        setY(y);
+        world.add(this);
     }
 }

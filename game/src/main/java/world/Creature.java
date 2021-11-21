@@ -23,16 +23,12 @@ import java.awt.Color;
  *
  * @author Aeranythe Echosong
  */
-public class Creature extends Thing{
-
-    private int maxHP;
-
-    public int maxHP() {
-        return this.maxHP;
+public class Creature extends Thing implements Runnable{
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        
     }
-
-    
-
     private int attackValue;
 
     public int attackValue() {
@@ -56,17 +52,9 @@ public class Creature extends Thing{
     }
 
     public Creature(World world, char glyph, Color color, int maxHP, int attack, int defense, int visionRadius) {
-        //this.world = world;
-        //this.glyph = glyph;
-        //this.color = color;
-        //this.maxHP = maxHP;
-        //this.hp = maxHP;
-        //this.attackValue = attack;
-        //this.defenseValue = defense;
-        //this.visionRadius = visionRadius;
         super(world,glyph,color,maxHP,attack,defense,visionRadius);
     }
     public void fire(Bullet bullet){
-        threadPool.execute(bullet);
+        //threadPool.execute(bullet);
     }
 }

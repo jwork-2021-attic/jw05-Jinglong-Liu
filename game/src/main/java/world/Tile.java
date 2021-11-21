@@ -38,7 +38,9 @@ public enum Tile {
     
     BANNER((char)150,AsciiPanel.brightRed),
 
-    CAMP((char)3,AsciiPanel.brightRed);
+    CAMP((char)3,AsciiPanel.brightRed),
+
+    CITYWALL((char) 177, AsciiPanel.brown);
 
     private char glyph;
 
@@ -55,16 +57,18 @@ public enum Tile {
     public boolean isDiggable() {
         return this == Tile.WALL;
     }
-
+    public boolean isDamagedByNormalBullet(){
+        return this == Tile.WALL || this == Tile.CITYWALL;
+    }
     public boolean isGround() {
-        return this != Tile.WALL && this != Tile.BOUNDS;
+        return this != Tile.WALL && this != Tile.BOUNDS && this!=Tile.CITYWALL;
     }
     /**
      * 
      * @return
      */
     public boolean isReachable(){
-        return this != Tile.WALL;
+        return this != Tile.WALL && this!=Tile.CITYWALL;
     }
     Tile(char glyph, Color color) {
         this.glyph = glyph;

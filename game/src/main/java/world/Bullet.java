@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import asciiPanel.AsciiPanel;
 
-public class Bullet extends world.Item implements Runnable{
+public class Bullet extends world.Item{
     private Creature order;
     public Creature getOrder() {
         return order;
@@ -33,22 +33,8 @@ public class Bullet extends world.Item implements Runnable{
         }
     }
     @Override
-    public void run() {
-        while(this.hp() > 0){
-            try{
-                step();
-
-                //System.out.println(order.x() + " " + order.y()+ " "+x() + " " + y());
-                TimeUnit.MILLISECONDS.sleep(200);
-            }
-            catch(InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-    }
-    @Override
     public void update() {
-        //step();
+       // step();
     }
     @Override
     public void dig(int wx, int wy) {

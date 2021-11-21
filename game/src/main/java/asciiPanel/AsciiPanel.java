@@ -100,6 +100,7 @@ public class AsciiPanel extends JPanel {
      */
     public static Color brightWhite = new Color(255, 255, 255);
 
+    public static Color brown = new Color(150,75,0);
     private Image offscreenBuffer;
     private Graphics offscreenGraphics;
     private int widthInCharacters;

@@ -25,12 +25,18 @@ public class Player extends Creature {
     @Override
     public void update() {
         if(hp() <= 0){
-            ai.onNotify("输！");
+            world.acceptLose();
         }
     }
     @Override
     public void step() {
         // TODO Auto-generated method stub
         super.stepAndAttack(false);
+    }
+    @Override
+    public void addAtEmptyLocation(World world) {
+        setX(world.width()/2 + 3);
+        setY(world.height() - 1);
+        world.add(this);
     }
 }

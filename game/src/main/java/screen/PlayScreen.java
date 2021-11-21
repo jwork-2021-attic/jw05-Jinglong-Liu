@@ -16,16 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package screen;
-
 import world.*;
 import asciiPanel.AsciiPanel;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 /**
  *
  * @author Aeranythe Echosong
@@ -41,15 +40,31 @@ public class PlayScreen implements Screen {
     private CreatureFactory factory;
     //private ExecutorService threadPool = Executors.newCachedThreadPool();
     public PlayScreen() {
-        this.screenWidth = 80;
-        this.screenHeight = 24;
-        createWorld();
-        this.messages = new ArrayList<String>();
+        this.screenWidth = 45;
+        this.screenHeight = 45;
+        
+        this.messages = new CopyOnWriteArrayList<>();
         this.oldMessages = new ArrayList<String>();
+        createWorld();
         Enemy.enemyNum = 2;
         factory = new CreatureFactory(this.world);
         createCreatures(factory);
-        
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                while(true){
+                    try{
+                        Thread.sleep(200);
+                        for(Thing bullet:world.bullets()){
+                            bullet.step();
+                        }
+                    }
+                    catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     private void createCreatures(CreatureFactory creatureFactory) {
@@ -57,17 +72,14 @@ public class PlayScreen implements Screen {
 
         for (int i = 0; i < Enemy.enemyNum;i++) {
             creatureFactory.newFungus();
-            new Thread(creatureFactory.newEnemy()).start();
+            new Thread(creatureFactory.newEnemy(this.messages)).start();
         }
     }
-    
     private void createWorld() {
-        world = new WorldBuilder(90, 31).makeCaves().build();
-        //world.addWall();
+        world = new WorldBuilder(45,45).makeCaves().makeCamp().build(this.messages);
     }
 
     private void displayTiles(AsciiPanel terminal, int left, int top) {
-        
         // Show terrain
         for (int x = 0; x < screenWidth; x++) {
             for (int y = 0; y < screenHeight; y++) {
@@ -77,7 +89,7 @@ public class PlayScreen implements Screen {
                 if (player.canSee(wx, wy)) {
                     terminal.write(world.glyph(wx, wy), x, y, world.color(wx, wy));
                 } else {
-                    terminal.write(world.glyph(wx, wy), x, y, Color.DARK_GRAY);
+                    //terminal.write(world.glyph(wx, wy), x, y, Color.DARK_GRAY);
                 }
             }
         }
@@ -98,7 +110,7 @@ public class PlayScreen implements Screen {
     private void displayMessages(AsciiPanel terminal, List<String> messages) {
         int top = this.screenHeight - messages.size();
         for (int i = 0; i < messages.size(); i++) {
-            terminal.write(messages.get(i), 1, top + i + 1);
+            terminal.write(messages.get(i), 1, top + i + 3);
         }
         this.oldMessages.addAll(messages);
 
@@ -116,17 +128,17 @@ public class PlayScreen implements Screen {
         // Stats
         String stats = String.format("%3d/%3d hp", player.hp(), player.maxHP());
         //System.out.println( player.hp());
-        terminal.write(stats, 1, 23);
+        terminal.write(stats, 1, screenHeight + 1);
         // Messages
         displayMessages(terminal, this.messages);
     }
 
     @Override
     public Screen respondToUserInput(KeyEvent key) {
-        if(player.hp() <= 0){
+        if(world.isLose()){
             return new LoseScreen();
         }
-        else if(Enemy.enemyNum == 0){
+        else if(world.isWin()){
             return new WinScreen();
         }
         switch (key.getKeyCode()) {
@@ -147,7 +159,8 @@ public class PlayScreen implements Screen {
                 player.moveBy(0, 1,false);
                 break;
             case KeyEvent.VK_J:
-                player.fire(factory.newBullet(player));
+                //player.fire(factory.newBullet(player));
+                factory.newBullet(player);
                 break;
         }
         return this;

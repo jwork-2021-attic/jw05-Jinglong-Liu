@@ -32,22 +32,53 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author Aeranythe Echosong
  */
 public class World {
-
+    private int state = 0;
+    private int mx;
+    private int my;
     private Tile[][] tiles;
     private int width;
     private int height;
     private List<Thing> things;
+    private List<Thing> bullets = new CopyOnWriteArrayList();
+    private List<String> messages;
     public static final int TILE_TYPES = 2;
-    public World(Tile[][] tiles) {
+    public World(Tile[][] tiles,int mx,int my,List<String> messages) {
         this.tiles = tiles;
         this.width = tiles.length;
         this.height = tiles[0].length;
         //this.things = new ArrayList<>();
         this.things = new CopyOnWriteArrayList();
-
-        
+        this.mx = mx;
+        this.my = my;
+        this.messages = messages;
     }
-
+    public void acceptLose(){
+        state = -1;
+        things.clear();
+        bullets.clear();
+        nodifyMessage("lose...");
+    }
+    public void acceptWin(){
+        state = 1;
+        things.clear();
+        bullets.clear();
+        nodifyMessage("win!");
+    }
+    public boolean isLose(){
+        return state == -1;
+    }
+    public boolean isWin(){
+        return state == 1;
+    }
+    public int getMx() {
+        return mx;
+    }
+    public int getMy() {
+        return my;
+    }
+    public List<Thing>bullets(){
+        return bullets;
+    }
     public Tile tile(int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
             return Tile.BOUNDS;
@@ -73,12 +104,15 @@ public class World {
     }
 
     public void dig(int x, int y) {
-        if (tile(x, y).isDiggable()) {
+        //if (tile(x, y).isDiggable()) {
             tiles[x][y] = Tile.FLOOR;
-        }
+        //}
     }
     public void add(Thing thing){
         this.things.add(thing);
+        if(thing instanceof Bullet){
+            bullets.add(thing);
+        }
     }
     public void addAtEmptyLocation(Thing creature) {
         int x;
@@ -93,6 +127,7 @@ public class World {
         creature.setY(y);
         this.things.add(creature);
     }
+    
     public synchronized Thing thing(int x,int y){
         
         Thing result = null;
@@ -119,6 +154,9 @@ public class World {
 
     public void remove(Thing target) {
         this.things.remove(target);
+        if(target instanceof Bullet){
+            bullets.remove(target);
+        }
     }
 
     public void update() {
@@ -127,21 +165,13 @@ public class World {
             creature.update();
         }
     }
-    public void addWall(){
-        for(int i = 0;i<this.width;i++){
-            for(int j = 0;j<this.height;j++){
-                if(tiles[i][j] == Tile.WALL){
-                    //Wall wall = new Wall(this,i,j);
-                    //new ItemAI(wall);
-                    //add(wall);
-                }
-            }
-        }
-    }
     public void setFloor(int x,int y){
         this.tiles[x][y] = Tile.FLOOR;
     }
     boolean outRange(int x,int y){
         return x <= 0 || x >= width || y<= 0|| y >= height;
+    }
+    public void nodifyMessage(String message){
+        messages.add(message);
     }
 }

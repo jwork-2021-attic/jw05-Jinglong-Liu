@@ -29,4 +29,7 @@ public interface Screen {
     public void displayOutput(AsciiPanel terminal);
 
     public Screen respondToUserInput(KeyEvent key);
+
+    default public void lose(){}
+    default public void win(){}
 }

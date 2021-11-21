@@ -38,8 +38,9 @@ public class CreatureFactory {
     }
 
     public Creature newPlayer(List<String> messages){
-        Creature player = new Player(this.world, (char)2, AsciiPanel.brightWhite, 1, 20, 5, 9);
-        world.addAtEmptyLocation(player);
+        Creature player = new Player(this.world, (char)2, AsciiPanel.brightWhite, 10, 2, 1, 0);
+        //world.addAtEmptyLocation(player);
+        player.addAtEmptyLocation(world);
         new PlayerAI(player, messages);
         return player;
     }
@@ -63,11 +64,12 @@ public class CreatureFactory {
     public Wall newWall(int x,int y){
         return new Wall(this.world,x,y);
     }
-    public Enemy newEnemy(){
+    public Creature newEnemy(List<String> messages){
         //Enemy(World world, char glyph, Color color, int maxHP, int attack, int defense)
-        Enemy enemy = new Enemy(world,(char)2,AsciiPanel.green,2,1,0,this);
-        world.addAtEmptyLocation(enemy);
-        new EnemyAI(enemy);
+        Creature enemy = new Enemy(world,(char)2,AsciiPanel.green,2,1,0,this);
+        //world.addAtEmptyLocation(enemy);
+        enemy.addAtEmptyLocation(world);
+        new EnemyAI(enemy,messages);
         return enemy;
     }
 }

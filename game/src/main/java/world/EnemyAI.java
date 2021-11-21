@@ -1,11 +1,14 @@
 package world;
 
+import java.util.List;
 import java.util.Random;
 
 public class EnemyAI extends CreatureAI{
     private CreatureFactory factory;
-    public EnemyAI(Thing creature) {
+    private List<String> messages;
+    public EnemyAI(Thing creature,List<String> messages) {
         super(creature);
+        this.messages = messages;
         // TODO Auto-generated constructor stub
     }
     @Override
@@ -18,5 +21,10 @@ public class EnemyAI extends CreatureAI{
         else if (tile.isDiggable()) {
             thing.dig(x, y);
         }
+    }
+    @Override
+    public void onNotify(String message) {
+        // TODO Auto-generated method stub
+        messages.add(message);
     }
 }

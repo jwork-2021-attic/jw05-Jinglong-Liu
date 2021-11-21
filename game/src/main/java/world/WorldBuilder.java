@@ -1,5 +1,6 @@
 package world;
 
+import java.util.List;
 import java.util.Random;
 
 /*
@@ -28,22 +29,24 @@ public class WorldBuilder {
     private int width;
     private int height;
     private Tile[][] tiles;
-
+    private int mx;
+    private int my;
     public WorldBuilder(int width, int height) {
         this.width = width;
         this.height = height;
         this.tiles = new Tile[width][height];
+        mx = width/2;
+        my = height - 2;
     }
 
-    public World build() {
-        return new World(tiles);
+    public World build(List<String> messages) {
+        return new World(tiles,mx,my,messages);
     }
-
     private WorldBuilder randomizeTiles() {
         for (int width = 0; width < this.width; width++) {
             for (int height = 0; height < this.height; height++) {
                 Random rand = new Random();
-                switch (rand.nextInt(World.TILE_TYPES)) {
+                    switch (rand.nextInt(World.TILE_TYPES)) {
                     case 0:
                         tiles[width][height] = Tile.FLOOR;
                         break;
@@ -51,11 +54,31 @@ public class WorldBuilder {
                         tiles[width][height] = Tile.WALL;
                         break;
                 }
+                
             }
+            
         }
         return this;
     }
-
+    public WorldBuilder makeCamp(){
+        for(int i = mx - 3;i <= mx + 3;i++){
+            for(int j = my - 3;j <= my + 1; j++ ){
+                tiles[i][j] = Tile.FLOOR;
+            }
+        }
+        for(int i = mx - 2;i <= mx + 2;i++){
+            for(int j = my - 2;j <= my + 1; j++){
+                tiles[i][j] = Tile.CITYWALL;
+            }
+        }
+        for(int i = mx - 1;i <= mx + 1;i++){
+            for(int j = my - 1;j <= my + 1; j++ ){
+                tiles[i][j] = Tile.FLOOR;
+            }
+        }
+        tiles[mx][my] = Tile.CAMP;
+        return this;
+    }
     private WorldBuilder smooth(int factor) {
         Tile[][] newtemp = new Tile[width][height];
         if (factor > 1) {

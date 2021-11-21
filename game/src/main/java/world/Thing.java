@@ -223,4 +223,16 @@ public class Thing {
     public void die(){
         this.modifyHP(-this.hp);
     }
+    public void addAtEmptyLocation(World world){
+        int x;
+        int y;
+
+        do {
+            x = (int) (Math.random() * world.width());
+            y = (int) (Math.random() * world.height());
+        } while (!tile(x, y).isGround() || world.creature(x, y) != null);
+        this.setX(x);
+        this.setY(y);
+        world.add(this);
+    }
 }
