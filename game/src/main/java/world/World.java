@@ -70,6 +70,9 @@ public class World {
     public boolean isWin(){
         return state == 1;
     }
+    public boolean isPlay(){
+        return state == 0;
+    }
     public int getMx() {
         return mx;
     }
@@ -169,7 +172,7 @@ public class World {
         this.tiles[x][y] = Tile.FLOOR;
     }
     boolean outRange(int x,int y){
-        return x <= 0 || x >= width || y<= 0|| y >= height;
+        return x < 0 || x >= width || y< 0|| y >= height;
     }
     public void nodifyMessage(String message){
         messages.add(message);

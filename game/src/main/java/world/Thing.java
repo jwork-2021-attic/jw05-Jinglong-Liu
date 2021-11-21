@@ -109,8 +109,11 @@ public class Thing {
 
         if (other == null) {
             ai.onEnter(x + mx, y + my, world.tile(x + mx, y + my));
-        } else if(isAttack){
+        } else if(isAttack || other instanceof Bullet && ((Bullet)other).getOrder() == this){
             attack(other);
+        }
+        else if(this instanceof Player &&  other instanceof Bullet){
+            other.attack(this);
         }
         //notifyAll();
     }
@@ -126,12 +129,12 @@ public class Thing {
     }
     public void attack(Thing other) {
         int damage = Math.max(0, this.attackValue() - other.defenseValue());
-        damage = (int) (Math.random() * damage) + 1;
-
+        //damage = (int) (Math.random() * damage) + 1;
+        //System.out.println(this.attackValue()+ " " + other.defenseValue());
         other.modifyHP(-damage);
 
-        this.notify("You attack the '%s' for %d damage.", other.glyph, damage);
-        other.notify("The '%s' attacks you for %d damage.", glyph, damage);
+        //this.notify("You attack the '%s' for %d damage.", other.glyph, damage);
+        //other.notify("The '%s' attacks you for %d damage.", glyph, damage);
     }
 
     public void update() {

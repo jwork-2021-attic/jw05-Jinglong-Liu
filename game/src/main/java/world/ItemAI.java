@@ -10,7 +10,7 @@ public class ItemAI extends CreatureAI {
     }
 
     public void onEnter(int x, int y, Tile tile) {
-        if(x == thing.world.getMx() && y == thing.world.getMy()){
+        if(Math.abs(x - thing.world.getMx()) <= 1 && Math.abs(y - thing.world.getMy()) <= 1){
             thing.world.acceptLose();
         }
         if(thing.world.outRange(x,y)){

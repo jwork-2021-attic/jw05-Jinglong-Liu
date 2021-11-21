@@ -61,6 +61,16 @@ public class WorldBuilder {
         return this;
     }
     public WorldBuilder makeCamp(){
+        for(int i = mx - 5;i <= mx + 5;i++){
+            for(int j = my - 5;j <= my + 1; j++){
+                tiles[i][j] = Tile.WALL;
+            }
+        }
+        for(int i = mx - 4;i <= mx + 4;i++){
+            for(int j = my - 4;j <= my + 1; j++){
+                tiles[i][j] = Tile.FLOOR;
+            }
+        }
         for(int i = mx - 3;i <= mx + 3;i++){
             for(int j = my - 3;j <= my + 1; j++ ){
                 tiles[i][j] = Tile.FLOOR;

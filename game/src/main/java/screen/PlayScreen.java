@@ -46,7 +46,7 @@ public class PlayScreen implements Screen {
         this.messages = new CopyOnWriteArrayList<>();
         this.oldMessages = new ArrayList<String>();
         createWorld();
-        Enemy.enemyNum = 2;
+        Enemy.enemyNum = 8;
         factory = new CreatureFactory(this.world);
         createCreatures(factory);
         new Thread(new Runnable(){
@@ -71,7 +71,7 @@ public class PlayScreen implements Screen {
         this.player = creatureFactory.newPlayer(this.messages);
 
         for (int i = 0; i < Enemy.enemyNum;i++) {
-            creatureFactory.newFungus();
+            //creatureFactory.newFungus();
             new Thread(creatureFactory.newEnemy(this.messages)).start();
         }
     }
@@ -143,22 +143,27 @@ public class PlayScreen implements Screen {
         }
         switch (key.getKeyCode()) {
             case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_A:
                 player.turn(Direction.LEFT);
                 player.moveBy(-1, 0,false);
                 break;
             case KeyEvent.VK_RIGHT:
+            case KeyEvent.VK_D:
                 player.turn(Direction.RIGHT);
                 player.moveBy(1, 0,false);
                 break;
             case KeyEvent.VK_UP:
+            case KeyEvent.VK_W:
                 player.turn(Direction.UP);
                 player.moveBy(0, -1,false);
                 break;
             case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_S:
                 player.turn(Direction.DOWN);
                 player.moveBy(0, 1,false);
                 break;
             case KeyEvent.VK_J:
+            case KeyEvent.VK_SPACE:
                 //player.fire(factory.newBullet(player));
                 factory.newBullet(player);
                 break;

@@ -29,17 +29,6 @@ public class Creature extends Thing implements Runnable{
         // TODO Auto-generated method stub
         
     }
-    private int attackValue;
-
-    public int attackValue() {
-        return this.attackValue;
-    }
-
-    private int defenseValue;
-
-    public int defenseValue() {
-        return this.defenseValue;
-    }
 
     private int visionRadius;
 

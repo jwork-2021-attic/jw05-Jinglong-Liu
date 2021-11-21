@@ -5,17 +5,18 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Enemy extends Creature{
-    public static int enemyNum = 2;
+    public static int enemyNum = 8;
     private CreatureFactory factory;
     public Enemy(World world, char glyph, Color color, int maxHP, int attack, int defense,CreatureFactory factory) {
         //super(world, glyph, color, maxHP, attack, defense, visionRadius);
         super(world, glyph, color, maxHP, attack, defense, 0);
         this.factory = factory;
         // TODO Auto-generated constructor stub
+        this.setDirection(Direction.DOWN);
     }
     @Override
     public void run() {
-        while(hp() > 0){
+        while(hp() > 0 && world.isPlay()){
             try{
                 TimeUnit.MILLISECONDS.sleep(400);
                 randomStep();
@@ -25,19 +26,59 @@ public class Enemy extends Creature{
             }
         }
     }
-    void randomStep(){
+    public void randomStep(){
         Random rand = new Random();
         int turn = rand.nextInt(6);
         if(turn == 0){
             randomTurn();
         }
-        else if(turn <2){
+        
+        else{
+            this.stepAndAttack(false);
+        }
+        
+        if(turn < 4){
             //fire(factory.newBullet(this));
             factory.newBullet(this);
         }
+    }
+    public void step(){
+        Random rand = new Random();
+        int r1 = rand.nextInt(100);
+        if(r1<=50){
+            factory.newBullet(this);
+        }else if(Math.abs(x() - world.getMx()) <= 1){
+            turn(Direction.DOWN);
+            super.step();
+        }
+        else if(y() == world.height() - 1){
+            if(x() < world.getMx() - 1){
+                turn(Direction.RIGHT);
+            }
+            else if(x() > world.getMy() + 1){
+                turn(Direction.LEFT);
+            }
+        }
+        else if(r1 < 60){
+
+            if(x() < world.getMx() - 1){
+                turn(Direction.RIGHT);
+                super.step();
+            }
+            else if(x() > world.getMy() + 1){
+                turn(Direction.LEFT);
+                super.step();
+            }
+            else{
+                super.step();
+            }
+        }
+        else if(r1 < 80){
+            turn(Direction.DOWN);
+            super.step();
+        }
         else{
-            this.stepAndAttack(false);
-            //System.out.println(x() + " " +  y());
+            super.step();
         }
     }
     @Override
@@ -48,7 +89,6 @@ public class Enemy extends Creature{
             Enemy.enemyNum--;
             //System.out.println(Enemy.enemyNum);
             if(Enemy.enemyNum == 0){
-                notify("赢！");
                 world.acceptWin();
             }           
         }

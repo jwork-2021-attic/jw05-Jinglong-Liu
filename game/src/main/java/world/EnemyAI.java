@@ -27,4 +27,5 @@ public class EnemyAI extends CreatureAI{
         // TODO Auto-generated method stub
         messages.add(message);
     }
+    
 }

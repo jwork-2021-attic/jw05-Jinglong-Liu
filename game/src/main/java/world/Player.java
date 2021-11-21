@@ -24,9 +24,7 @@ public class Player extends Creature {
     }
     @Override
     public void update() {
-        if(hp() <= 0){
-            world.acceptLose();
-        }
+        
     }
     @Override
     public void step() {
@@ -38,5 +36,13 @@ public class Player extends Creature {
         setX(world.width()/2 + 3);
         setY(world.height() - 1);
         world.add(this);
+    }
+    @Override
+    public void modifyHP(int amount) {
+        // TODO Auto-generated method stub
+        super.modifyHP(amount);
+        if(hp() <= 0){
+            world.acceptLose();
+        }
     }
 }

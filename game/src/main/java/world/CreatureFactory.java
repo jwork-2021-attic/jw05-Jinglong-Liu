@@ -38,7 +38,7 @@ public class CreatureFactory {
     }
 
     public Creature newPlayer(List<String> messages){
-        Creature player = new Player(this.world, (char)2, AsciiPanel.brightWhite, 10, 2, 1, 0);
+        Creature player = new Player(this.world, (char)2, AsciiPanel.brightWhite, 5, 2, 1, 0);
         //world.addAtEmptyLocation(player);
         player.addAtEmptyLocation(world);
         new PlayerAI(player, messages);
@@ -46,7 +46,7 @@ public class CreatureFactory {
     }
 
     public Creature newFungus() {
-        Creature fungus = new Creature(this.world, (char)3, AsciiPanel.green, 10, 0, 0, 0);
+        Creature fungus = new Creature(this.world, (char)3, AsciiPanel.green, 5, 0, 0, 0);
         world.addAtEmptyLocation(fungus);
         new FungusAI(fungus, this);
         return fungus;
@@ -66,7 +66,7 @@ public class CreatureFactory {
     }
     public Creature newEnemy(List<String> messages){
         //Enemy(World world, char glyph, Color color, int maxHP, int attack, int defense)
-        Creature enemy = new Enemy(world,(char)2,AsciiPanel.green,2,1,0,this);
+        Creature enemy = new Enemy(world,(char)2,AsciiPanel.green,2,2,1,this);
         //world.addAtEmptyLocation(enemy);
         enemy.addAtEmptyLocation(world);
         new EnemyAI(enemy,messages);
